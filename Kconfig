@@ -83,6 +83,11 @@ config PLATFORM_FLAPPER
     select SENSORS_BMI088_BMP3XX
     select SENSORS_BMI088_SPI
 
+config PLATFORM_FS
+    bool "Build for FS platform"
+    select SENSORS_BMI088_BMP3XX
+    select SENSORS_BMI088_SPI
+
 endchoice
 
 config BOLT11_BRUSHED
