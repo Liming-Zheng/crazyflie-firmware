@@ -71,6 +71,7 @@ static motors_thrust_uncapped_t motorThrustUncapped;
 static motors_thrust_uncapped_t motorThrustBatCompUncapped;
 static motors_thrust_pwm_t motorPwm;
 
+
 // For scratch storage - never logged or passed to other subsystems.
 static setpoint_t tempSetpoint;
 

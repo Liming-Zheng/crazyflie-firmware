@@ -183,6 +183,9 @@ typedef struct state_s {
 
 #define STABILIZER_NR_OF_MOTORS 4
 
+// setup for fs
+#define FS_SERVOS 5
+
 typedef enum control_mode_e {
   controlModeLegacy      = 0, // legacy mode with int16_t roll, pitch, yaw and float thrust
   controlModeForceTorque = 1,
@@ -240,6 +243,18 @@ typedef union {
     uint16_t m4;  // PWM ratio
   } motors;
 } motors_thrust_pwm_t;
+
+// setup for FS
+typedef union{
+  uint16_t list[FS_SERVOS];
+  struct{
+    uint16_t s1; // PWM
+    uint16_t s2; // PWM
+    uint16_t s3; // PWM
+    uint16_t s4; // PWM
+    uint16_t s5; // PWM
+  } servos;
+} fs_servos_pwm_t;
 
 typedef enum mode_e {
   modeDisable = 0,
