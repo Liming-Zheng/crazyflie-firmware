@@ -200,6 +200,12 @@ config POWER_DISTRIBUTION_FLAPPER
     depends on PLATFORM_FLAPPER
     help
         Power distribution function for Flapper Nimble+
+config POWER_DISTRIBUTION_FS
+    bool "Tiny FS-Robot power distribution"
+    depends on PLATFORM_FS
+    help
+        Power distribution function for FS-Robot
+
 
 endchoice
 config POWER_DISTRIBUTION_FLAPPER_REVB
