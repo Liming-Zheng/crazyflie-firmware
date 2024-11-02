@@ -100,6 +100,7 @@
 #define UART2_TASK_PRI          3
 #define CRTP_SRV_TASK_PRI       0
 #define PLATFORM_SRV_TASK_PRI   0
+#define FTF_TASK_PRI            3
 // Liming own tasks test
 // #define LIMING_T1_TASK_PRI      3
 
@@ -160,6 +161,7 @@
 #define CPX_TASK_NAME           "CPX"
 #define APP_TASK_NAME           "APP"
 #define FLAPPERDECK_TASK_NAME   "FLAPPERDECK"
+#define FTF_TASK_NAME           "FTFDECK"
 // Liming own tasks test
 // #define LIMING_T1_TASK_NAME     "LIMING-T1"
 
@@ -208,6 +210,7 @@
 #define KALMAN_TASK_STACKSIZE         (3 * configMINIMAL_STACK_SIZE)
 #define FLAPPERDECK_TASK_STACKSIZE    (2 * configMINIMAL_STACK_SIZE)
 #define ERROR_UKF_TASK_STACKSIZE      (4 * configMINIMAL_STACK_SIZE)
+#define FTF_TASK_STACKSIZE      (1 * configMINIMAL_STACK_SIZE)
 // Liming own tasks test
 // #define LIMING_T1_TASK_STACKSIZE      configMINIMAL_STACK_SIZE
 

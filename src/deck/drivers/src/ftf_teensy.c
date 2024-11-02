@@ -12,6 +12,8 @@
 #include "task.h"
 #include "system.h"
 
+#define START_BYTE 0x9A
+#define END_BYTE 0xA9
 #define MAX_MESSAGE_SIZE 48
 
 static uint8_t isInit = 0;
@@ -21,90 +23,93 @@ float motor_1, motor_2, motor_3, motor_4;
 void readSerial1() {
     char buf[MAX_MESSAGE_SIZE];
     char c = '0';
-    char* token = NULL;
-    int tokenCount = 0;
+    int byteCount = 0;
+    bool startDetected = false;
 
     for (int i = 0; i < MAX_MESSAGE_SIZE - 1; i++) {
         if (!uart1GetDataWithDefaultTimeout(&c)) break;
 
-        if (c == '\n') {
-            buf[i] = '\0';
-
-            // 使用strtok分割字符串
-            token = strtok(buf, ",");
-            while (token != NULL && tokenCount < 3) {
-                switch (tokenCount) {
-                    case 0:
-                        barometer1_1 = atof(token);
-                        break;
-                    case 1:
-                        barometer1_2 = atof(token);
-                        break;
-                    case 2:
-                        barometer1_3 = atof(token);
-                        break;
-                }
-
-                token = strtok(NULL, ",");
-                tokenCount++;
-            }
-
-            if (tokenCount < 3) {
-                DEBUG_PRINT("Error parsing sensor1 data\n");
-            }
-
-            break;
+        // 检测起始字节
+        if (c == START_BYTE) {
+            startDetected = true;
+            byteCount = 0;
+            continue;
         }
 
-        buf[i] = c;
+        if (startDetected) {
+            if (c == END_BYTE) {
+                buf[byteCount] = '\0';
+                startDetected = false;
+                
+                // 解析接收的数据
+                uint8_t motorID;
+                uint16_t motorCommand;
+                int tokenCount = 0;
+                char* token = strtok(buf, ",");
 
-        if (c == ',') {
-            // 重置 token 和 tokenCount
-            token = NULL;
-            tokenCount = 0;
+                while (token != NULL && tokenCount < 4) {
+                    if (tokenCount % 2 == 0) {
+                        motorID = atoi(token); // 读取电机ID
+                    } else {
+                        motorCommand = atoi(token); // 读取电机指令
+                        DEBUG_PRINT("Motor ID: %d, Motor Command: %u\n", motorID, motorCommand);
+                    }
+                    token = strtok(NULL, ",");
+                    tokenCount++;
+                }
+
+                if (tokenCount < 4) {
+                    DEBUG_PRINT("Error parsing motor data\n");
+                }
+                break;
+            }
+
+            buf[byteCount++] = c;
         }
     }
 }
 
 
 
-void WhiskerTask(void *param) {
+
+void FTFTask(void *param) {
     systemWaitStart();
     while (1) {
         readSerial1();
     }
 }
 
-static void WhiskerInit() {
+static void FTFInit() {
     DEBUG_PRINT("Initialize driver\n");
 
     uart1Init(115200);
 
-    xTaskCreate(WhiskerTask, WHISKER_TASK_NAME, WHISKER_TASK_STACKSIZE, NULL,
-                WHISKER_TASK_PRI, NULL);
+    xTaskCreate(FTFTask, FTF_TASK_NAME, FTF_TASK_STACKSIZE, NULL,
+                FTF_TASK_PRI, NULL);
 
     isInit = 1;
 }
 
-static bool WhiskerTest() {
+static bool FTFTest() {
     return isInit;
 }
 
-static const DeckDriver WhiskerDriver = {
-        .name = "Whisker",
-        .init = WhiskerInit,
-        .test = WhiskerTest,
+static const DeckDriver FTFDriver = {
+        .name = "FTFDeck",
+        .init = FTFInit,
+        .test = FTFTest,
         .usedPeriph = DECK_USING_UART1,
 };
 
-DECK_DRIVER(WhiskerDriver);
+DECK_DRIVER(FTFDriver);
 
 
 /**
- * Logging variables for the Whisker
+ * Logging variables for the FTF
  */
-LOG_GROUP_START(Whisker)
-LOG_ADD(LOG_FLOAT, Barometer1_1, &barometer1_1)
-LOG_ADD(LOG_FLOAT, Barometer1_2, &barometer1_2)
-LOG_ADD(LOG_FLOAT, Barometer1_3, &barometer1_3)
-LOG_GROUP_STOP(Whisker)
+LOG_GROUP_START(FTF)
+LOG_ADD(LOG_FLOAT, motor1, &motor1)
+LOG_ADD(LOG_FLOAT, motor2, &motor2)
+LOG_ADD(LOG_FLOAT, motor3, &motor3)
+LOG_ADD(LOG_FLOAT, motor4, &motor4)
+LOG_GROUP_STOP(FTF)
