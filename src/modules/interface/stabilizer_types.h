@@ -234,6 +234,18 @@ typedef union {
   } motors;
 } motors_thrust_uncapped_t;
 
+// FS
+typedef struct {
+  int32_t list[STABILIZER_NR_OF_MOTORS];
+  struct {
+    int32_t m1;
+    int32_t m2;
+    int32_t m3;
+    int32_t m4;
+  } motors;
+  
+};
+
 typedef union {
   uint16_t list[STABILIZER_NR_OF_MOTORS];
   struct {

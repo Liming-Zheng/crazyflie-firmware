@@ -165,7 +165,7 @@ uint16_t limitThrust(int32_t value, int32_t min, int32_t max, bool* isCapped)
 }
 
 // This is the most important function for the MIXER
-void powerDistribution(const control_t *control, motors_thrust_uncapped_t* motorThrustUncapped)
+void powerDistribution(const control_t *control, motors_thrust_uncapped_t* motorThrustUncapped, fs_servos_pwm_t* servoPwm)
 {
   // Only legacy mode is currently supported
   ASSERT(control->controlMode == controlModeLegacy);
@@ -190,7 +190,7 @@ void powerDistribution(const control_t *control, motors_thrust_uncapped_t* motor
 }
 
 // This is the limitation of the MIXER
-bool powerDistributionCap(const motors_thrust_uncapped_t* motorThrustBatCompUncapped, motors_thrust_pwm_t* motorPwm)
+bool powerDistributionCap(const motors_thrust_uncapped_t* motorThrustBatCompUncapped, motors_thrust_pwm_t* motorPwm, fs_servos_pwm_t* servoPwm)
 {
   bool isCapped = false;
 

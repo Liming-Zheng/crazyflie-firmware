@@ -71,6 +71,9 @@ static motors_thrust_uncapped_t motorThrustUncapped;
 static motors_thrust_uncapped_t motorThrustBatCompUncapped;
 static motors_thrust_pwm_t motorPwm;
 
+// FS
+static fs_servos_pwm_t servoPwm;
+
 
 // For scratch storage - never logged or passed to other subsystems.
 static setpoint_t tempSetpoint;
@@ -246,7 +249,7 @@ static void logCapWarning(const bool isCapped) {
   }
   #endif
 }
-
+// TODO, here is the place, I need to modify for fs and ftf
 static void controlMotors(const control_t* control) {
   powerDistribution(control, &motorThrustUncapped);
   batteryCompensation(&motorThrustUncapped, &motorThrustBatCompUncapped);
@@ -282,6 +285,7 @@ static void stabilizerTask(void* param)
   DEBUG_PRINT("Starting stabilizer loop\n");
   rateSupervisorInit(&rateSupervisorContext, xTaskGetTickCount(), M2T(1000), 997, 1003, 1);
 
+// Here is the attitude level main loop
   while(1) {
     // The sensor should unlock at 1kHz
     sensorsWaitDataReady();

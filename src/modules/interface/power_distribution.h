@@ -38,7 +38,7 @@ bool powerDistributionTest(void);
  * @param control Data from the controller
  * @param motorThrustUncapped The desired thrust
  */
-void powerDistribution(const control_t *control, motors_thrust_uncapped_t* motorThrustUncapped);
+void powerDistribution(const control_t *control, motors_thrust_uncapped_t* motorThrustUncapped, fs_servos_pwm_t* servoPwm);
 
 /**
  * @brief Cap the thrust for the motors when out side of the valid range [0 - UINT16_MAX]. The platform specific
@@ -50,7 +50,7 @@ void powerDistribution(const control_t *control, motors_thrust_uncapped_t* motor
  * @return true   Thrust was capped
  * @return false  Thrust was unchanged and not capped
  */
-bool powerDistributionCap(const motors_thrust_uncapped_t* motorThrustBatCompUncapped, motors_thrust_pwm_t* motorPwm);
+bool powerDistributionCap(const motors_thrust_uncapped_t* motorThrustBatCompUncapped, motors_thrust_pwm_t* motorPwm, fs_servos_pwm_t* servoPwm);
 
 /**
  * Returns a 1 when motor 'id' gives thrust, returns 0 otherwise
